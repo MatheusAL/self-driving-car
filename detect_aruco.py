@@ -5,7 +5,6 @@ import yaml
 
 # referência: https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
 
-
 class ArUcoMarkerDetector:
     def __init__(self, frame):
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
@@ -15,7 +14,7 @@ class ArUcoMarkerDetector:
 
     def get_parameters_calibration(self):
         #filename = "/home/matheusl/Área de Trabalho/visao/self-driving/self-driving-car/implementacao-20231202T133008Z-001/implementacao/calibration_data.yaml"
-        filename = "C:/Users/Juliana/Desktop/mestrado/DPI/INF-492 Fundamentos Visao Computacional/TrabalhoFinal_CarrinhoRobo/codigo/carrinho_autonomo_novo/calibration_data"
+        filename = "C:Users/Juliana/Desktop/mestrado/DPI/INF-492 Fundamentos Visao Computacional/TrabalhoFinal_CarrinhoRobo/codigo/carrinho_autonomo_novo/calibration_data"
 
         with open(filename, "r") as file:
             data = yaml.safe_load(file)
@@ -38,9 +37,7 @@ class ArUcoMarkerDetector:
             ],
             dtype=np.float32,
         ).reshape(-1, 3, 1)
-        # obj_points = np.zeros((4, 1, 3), dtype=np.float32)
-        # Verifique se há pelo menos 4 pontos correspondentes
-        # if len(marker_corners[0]) >= 4:
+
         success, rvec, tvec = cv2.solvePnP(
             obj_points,
             marker_corners[0],
@@ -48,13 +45,7 @@ class ArUcoMarkerDetector:
             np.array(dist_coeffs),
             flags=cv2.SOLVEPNP_ITERATIVE,
         )
-        # Restante do seu código
-        # else:
-        #    print("Não há pontos suficientes para calcular a pose.")
 
-        # rvec, tvec, _ = aruco.estimatePoseSingleMarkers(
-        #    marker_corners[0][0], 1, camera_matrix, dist_coeffs
-        # )
         print(f"Marker ID: {marker_id}")
         print(f"Rotation Vector (rvec): {rvec}")
         print(f"Translation Vector (tvec): {tvec}")
@@ -70,7 +61,8 @@ class ArUcoMarkerDetector:
         # first try
         rotation_threshold = 0.4
         threshold_distance = 0.5
-        return "Stop"
+        return "Parked"
+    
         if tvec[2] > threshold_distance:
             if abs(rvec[2]) < rotation_threshold:
                 return "Forward"

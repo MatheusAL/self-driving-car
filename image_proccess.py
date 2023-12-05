@@ -153,51 +153,56 @@ class ImageProcess:
 
         return color_values.get(circle_color, "Cor inválida")
 
-    def process_frame(self, frame, identified_circle):
-        if identified_circle:
-            aruco_manager = detaruco.ArUcoMarkerDetector(frame)
-            try:
-                marker_corners, marker_ids = aruco_manager.detect_markers()
+    def saw_aruco(frame):
+        aruco_manager = detaruco.ArUcoMarkerDetector(frame)
+        marker_corners, marker_ids = aruco_manager.detect_markers()
 
-                if marker_corners is not None and marker_ids is not None:
-                    direction = aruco_manager.get_direction_aruco(
-                        marker_corners, marker_ids
-                    )
-                else:
-                    direction = "stop"
-
-            except:
-                direction = "Left"
-                # turn right 4 times
-                # turn left 4 times
-
+        if marker_corners is not None and marker_ids is not None:
+            return True
         else:
-            direction = "stop"
-            time_circle = self.get_time_circleframe(frame)
+            return False    
 
-            if time_circle == 0:
-                src = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-                if src is None:
-                    print("Error opening image!")
-                    return -1
+    def park_the_car(frame):
+        aruco_manager = detaruco.ArUcoMarkerDetector(frame)
+        try:
+            marker_corners, marker_ids = aruco_manager.detect_markers()
 
-                width = src.shape[1]
-                dst = cv.Canny(src, 30, 100, None, 3)
-                cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
-                cdstP = np.copy(cdst)
-                linesP = self.get_lines(dst)
-
-                if linesP is not None:
-                    left_line, right_line = self.get_left_and_right_lines(linesP, width)
-                    self.draw_left_and_right_lines(left_line, right_line, cdstP, width)
-
-                    if left_line is not None and right_line is not None:
-                        central_line = self.get_central_line(cdstP, width)
-                        direction = self.get_direction(
-                            left_line, right_line, central_line
-                        )
+            if marker_corners is not None and marker_ids is not None:
+                return aruco_manager.get_direction_aruco(
+                    marker_corners, marker_ids
+                )
             else:
-                direction = str(time_circle)
+                return "stop"
+        except:
+            return "Left"
+
+    def process_frame(self, frame):
+        direction = "stop"
+        time_circle = self.get_time_circleframe(frame)
+
+        if time_circle == 0:
+            src = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            if src is None:
+                print("Error opening image!")
+                return -1
+
+            width = src.shape[1]
+            dst = cv.Canny(src, 30, 100, None, 3)
+            cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
+            cdstP = np.copy(cdst)
+            linesP = self.get_lines(dst)
+
+            if linesP is not None:
+                left_line, right_line = self.get_left_and_right_lines(linesP, width)
+                self.draw_left_and_right_lines(left_line, right_line, cdstP, width)
+
+                if left_line is not None and right_line is not None:
+                    central_line = self.get_central_line(cdstP, width)
+                    direction = self.get_direction(
+                        left_line, right_line, central_line
+                    )
+        else:
+            direction = str(time_circle)
 
         return direction
 

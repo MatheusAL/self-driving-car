@@ -58,19 +58,18 @@ class ArUcoMarkerDetector:
 
         print(f"Camera position: X:{tvec[0]}, Y:{tvec[1]}, and Z:{tvec[2]}")
         print(f"Camera rotation: X:{rvec[0]}, Y:{rvec[1]}, and Z:{rvec[2]}\n")
-
         # first try
-        rotation_threshold = 0.4
+        rotation_threshold = 1
         threshold_distance = 0.5
-        return "Parked"
+        # return "Parked"
 
         if tvec[2] > threshold_distance:
             if abs(rvec[2]) < rotation_threshold:
                 return "Forward"
             elif rvec[2] > 0:
-                return "Left"
-            else:
                 return "Right"
+            else:
+                return "Left"
 
         return "Stop"
 

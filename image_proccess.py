@@ -163,14 +163,23 @@ class ImageProcess:
             return False
 
     def park_the_car(self, frame):
-        cv.imshow("frameAruco", frame)
+        frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)  # Change grayscale
         aruco_manager = detaruco.ArUcoMarkerDetector(frame)
         marker_corners, marker_ids = aruco_manager.detect_markers()
-
         if marker_corners is not None and marker_ids is not None:
             return aruco_manager.get_direction_aruco(marker_corners, marker_ids)
         else:
-            return "stop"
+            return "Left"  # change
+
+    def pre_process_frame(self, frame):
+        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+        lower_blue = np.array([100, 50, 50])
+        upper_blue = np.array([130, 255, 255])
+
+        mask = cv.inRange(hsv, lower_blue, upper_blue)
+
+        res = cv.bitwise_and(frame, frame, mask=mask)
+        return res
 
     def process_frame(self, frame):
         direction = "stop"
@@ -183,7 +192,8 @@ class ImageProcess:
                 return -1
 
             width = src.shape[1]
-            dst = cv.Canny(src, 30, 100, None, 3)
+            image_blue = self.pre_process_frame(frame)
+            dst = cv.Canny(image_blue, 30, 100, None, 3)
             cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
             cdstP = np.copy(cdst)
             linesP = self.get_lines(dst)
@@ -206,7 +216,6 @@ class ImageProcess:
         image_with_line = cv.line(
             image, (center_x, 0), (center_x, height), (255, 100, 100), 2
         )
-        cv.imshow("img", image_with_line)
         # self.save_frame(image_with_line)
 
     def save_frame(self, frame):

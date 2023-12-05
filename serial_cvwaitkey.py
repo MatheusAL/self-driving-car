@@ -43,7 +43,7 @@ class AutonomousCar:
             return command
 
     def get_code_command_car(self, frame):
-        # self.process_image(frame)
+        self.process_image(frame)
         command = self.get_direction(frame)
         return self.codeCommand(command)
 
@@ -77,14 +77,17 @@ class AutonomousCar:
 
             if key in {"w", "a", "s", "d"}:
                 self.serial_port.write(key.encode())
-            time.sleep(0.3)
+                self.serial_port.write(key.encode())
+                time.sleep(0.1)
+            if key == ord("q") or cv2.waitKey(1) == ord("q"):
+                break
+            time.sleep(1)
 
     def run(self):
         try:
             while True:
                 frame = video_capture.get_frame(self.video_capture)
                 key = self.get_code_command_car(frame)
-
                 if key in {"w", "a", "s", "d"}:
                     self.serial_port.write(key.encode())
                 elif key in {"20", "30", "40", "50"}:

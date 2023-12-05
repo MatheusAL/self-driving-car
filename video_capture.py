@@ -15,13 +15,13 @@ def connect_camera():
         print("Cannot open camera")
         exit()
 
-    fps = 10.0
-    height = 720.0
-    width = 1280.0
+    # fps = 10.0
+    # height = 720.0
+    # width = 1280.0
 
-    # fps = 30.0
-    # height = 480.0
-    # width = 640.0
+    fps = 30.0
+    height = 480.0
+    width = 640.0
 
     cap.set(cv.CAP_PROP_FPS, fps)
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)
@@ -29,6 +29,7 @@ def connect_camera():
     cap.set(cv.CAP_PROP_AUTOFOCUS, 0)
     cap.set(cv.CAP_PROP_CONTRAST, 200)
     cap.set(cv.CAP_PROP_WHITE_BALANCE_BLUE_U, 1)
+    cap.set(cv.CAP_PROP_BUFFERSIZE, 1)
     print(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     print(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
     print(cap.get(cv.CAP_PROP_FPS))

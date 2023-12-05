@@ -10,13 +10,13 @@ class CircleDetector:
     def detect_color(self, color_at_center_rgb):
         r, g, b = color_at_center_rgb
 
-        if 0 <= r <= 1 and 249 <= g <= 255 and 249 <= b <= 255:
+        if 0 <= r <= 20 and 190 <= g <= 255 and 190 <= b <= 255 and g <= b:
             return "CIANO"
-        elif 254 <= r <= 255 and 0 <= g <= 1 and 254 <= b <= 255:
+        elif 190 <= r <= 255 and 0 <= g <= 20 and 190 <= b <= 255:
             return "MAGENTA"
         elif 190 <= r <= 255 and 80 <= g <= 165 and 0 <= b <= 20:
             return "LARANJA"
-        elif 0 <= r <= 1 and 127 <= g <= 255 and 0 <= b <= 1:
+        elif 0 <= r <= 20 and 127 <= g <= 255 and 0 <= b <= 190 and g > b:
             return "VERDE_CRU"
         else:
             return "No_color"

@@ -6,12 +6,13 @@ import numpy as np
 import video_capture
 import image_proccess as img
 
+
 class AutonomousCar:
     def __init__(self):
         self.image_processor = img.ImageProcess()
         self.identified_circle = False
-        self.serial_port = serial.Serial('COM5', 9600)
-        # self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
+        # self.serial_port = serial.Serial('COM5', 9600)
+        self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
         self.video_capture = video_capture.connect_camera()
 
     def process_image(self, image):
@@ -42,24 +43,27 @@ class AutonomousCar:
             return command
 
     def get_code_command_car(self, frame):
-        self.process_image(frame)
+        # self.process_image(frame)
         command = self.get_direction(frame)
-        return self.codeCommand(command)        
+        return self.codeCommand(command)
 
     def go_to_crosswalk(self):
         while True:
             frame = video_capture.get_frame(self.video_capture)
 
-            if self.image_processor.saw_aruco(frame): #geralmente o carrinho vê o aruco já bem próximo da faixa
+            if self.image_processor.saw_aruco(
+                frame
+            ):  # geralmente o carrinho vê o aruco já bem próximo da faixa
                 break
 
             key = self.get_code_command_car(frame)
 
             if key in {"w", "a", "s", "d"}:
-                self.serial_port.write(key.encode())        
+                self.serial_port.write(key.encode())
 
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
-                break      
+                break
+            time.sleep(0.3)
 
     def go_to_aruco(self):
         while True:
@@ -69,10 +73,11 @@ class AutonomousCar:
             if command == "Parked":
                 break
 
-            key = self.codeCommand(command)    
+            key = self.codeCommand(command)
 
             if key in {"w", "a", "s", "d"}:
-                self.serial_port.write(key.encode())      
+                self.serial_port.write(key.encode())
+            time.sleep(0.3)
 
     def run(self):
         try:
@@ -99,6 +104,7 @@ class AutonomousCar:
             self.video_capture.release()
             self.serial_port.close()
             cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     autonomous_car = AutonomousCar()

@@ -153,28 +153,24 @@ class ImageProcess:
 
         return color_values.get(circle_color, "Cor inválida")
 
-    def saw_aruco(frame):
+    def saw_aruco(self, frame):
         aruco_manager = detaruco.ArUcoMarkerDetector(frame)
         marker_corners, marker_ids = aruco_manager.detect_markers()
 
         if marker_corners is not None and marker_ids is not None:
             return True
         else:
-            return False    
+            return False
 
-    def park_the_car(frame):
+    def park_the_car(self, frame):
+        cv.imshow("frameAruco", frame)
         aruco_manager = detaruco.ArUcoMarkerDetector(frame)
-        try:
-            marker_corners, marker_ids = aruco_manager.detect_markers()
+        marker_corners, marker_ids = aruco_manager.detect_markers()
 
-            if marker_corners is not None and marker_ids is not None:
-                return aruco_manager.get_direction_aruco(
-                    marker_corners, marker_ids
-                )
-            else:
-                return "stop"
-        except:
-            return "Left"
+        if marker_corners is not None and marker_ids is not None:
+            return aruco_manager.get_direction_aruco(marker_corners, marker_ids)
+        else:
+            return "stop"
 
     def process_frame(self, frame):
         direction = "stop"
@@ -198,9 +194,7 @@ class ImageProcess:
 
                 if left_line is not None and right_line is not None:
                     central_line = self.get_central_line(cdstP, width)
-                    direction = self.get_direction(
-                        left_line, right_line, central_line
-                    )
+                    direction = self.get_direction(left_line, right_line, central_line)
         else:
             direction = str(time_circle)
 
@@ -212,7 +206,8 @@ class ImageProcess:
         image_with_line = cv.line(
             image, (center_x, 0), (center_x, height), (255, 100, 100), 2
         )
-        self.save_frame(image_with_line)
+        cv.imshow("img", image_with_line)
+        # self.save_frame(image_with_line)
 
     def save_frame(self, frame):
         global frame_count

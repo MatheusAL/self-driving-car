@@ -14,8 +14,8 @@ class ArUcoMarkerDetector:
         self.image = frame
 
     def get_parameters_calibration(self):
-        #filename = "/home/matheusl/Área de Trabalho/visao/self-driving/self-driving-car/implementacao-20231202T133008Z-001/implementacao/calibration_data.yaml"
-        filename = "C:/Users/Juliana/Desktop/mestrado/DPI/INF-492 Fundamentos Visao Computacional/TrabalhoFinal_CarrinhoRobo/codigo/carrinho_autonomo_novo/calibration_data"
+        filename = "/home/matheusl/Área de Trabalho/visao/self-driving/self-driving-car/implementacao-20231202T133008Z-001/implementacao/calibration_data.yaml"
+        # filename = "C:/Users/Juliana/Desktop/mestrado/DPI/INF-492 Fundamentos Visao Computacional/TrabalhoFinal_CarrinhoRobo/codigo/carrinho_autonomo_novo/calibration_data"
 
         with open(filename, "r") as file:
             data = yaml.safe_load(file)
@@ -55,9 +55,9 @@ class ArUcoMarkerDetector:
         # rvec, tvec, _ = aruco.estimatePoseSingleMarkers(
         #    marker_corners[0][0], 1, camera_matrix, dist_coeffs
         # )
-        print(f"Marker ID: {marker_id}")
-        print(f"Rotation Vector (rvec): {rvec}")
-        print(f"Translation Vector (tvec): {tvec}")
+        # print(f"Marker ID: {marker_id}")
+        # print(f"Rotation Vector (rvec): {rvec}")
+        # print(f"Translation Vector (tvec): {tvec}")
 
         return tvec, rvec
 
@@ -70,7 +70,7 @@ class ArUcoMarkerDetector:
         # first try
         rotation_threshold = 0.4
         threshold_distance = 0.5
-        return "Stop"
+        return "stop"
         if tvec[2] > threshold_distance:
             if abs(rvec[2]) < rotation_threshold:
                 return "Forward"
@@ -86,6 +86,13 @@ class ArUcoMarkerDetector:
         marker_corners, marker_ids, rejected = self.detector.detectMarkers(image)
 
         if marker_ids is not None:
+            frame_with_markers = aruco.drawDetectedMarkers(
+                image, marker_corners, marker_ids
+            )
+            cv2.imshow("ArUco Detection", frame_with_markers)
+            key = cv2.waitKey(0)
+            while key != 111:  # ASCII code for 'o'
+                key = cv2.waitKey(0)
             return marker_corners, marker_ids
         else:
             print("No ArUco markers detected.")

@@ -7,22 +7,22 @@ frame_count = 0
 
 # cmd = "v4l2-ctl --device 2 --set-ctrl=white_balance_automatic=1,contrast=200,white_balance_temperature=1,focus_automatic_continuous=0"
 
+
 def connect_camera():
     # Change the camera id 0-camera notebook 1- camera carrinho
-    cap = cv.VideoCapture(1)
+    cap = cv.VideoCapture(0)
 
     if not cap.isOpened():
         print("Cannot open camera")
-        exit()
 
     # change the resolution and fps to match your device
     fps = 10.0  # change the fps to match your device
     height = 720.0  # change the frame height to match your device
     width = 1280.0  # change the frame width to match your device
 
-    #fps = 30.0
-    #height = 480.0
-    #width = 640.0
+    # fps = 30.0
+    # height = 480.0
+    # width = 640.0
 
     cap.set(cv.CAP_PROP_FPS, fps)
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)

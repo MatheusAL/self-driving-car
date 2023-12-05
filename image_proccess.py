@@ -207,7 +207,7 @@ class ImageProcess:
         image_with_line = cv.line(
             image, (center_x, 0), (center_x, height), (255, 100, 100), 2
         )
-        self.save_frame(image_with_line)
+        # self.save_frame(image_with_line)
 
     def save_frame(self, frame):
         global frame_count

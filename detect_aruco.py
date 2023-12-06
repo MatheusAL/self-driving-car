@@ -9,7 +9,7 @@ import yaml
 
 class ArUcoMarkerDetector:
     def __init__(self, frame):
-        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
+        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_1000)
         self.parameters = aruco.DetectorParameters()
         self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
         self.image = frame
@@ -60,17 +60,32 @@ class ArUcoMarkerDetector:
         print(f"Camera position: X:{tvec[0]}, Y:{tvec[1]}, and Z:{tvec[2]}")
         print(f"Camera rotation: X:{rvec[0]}, Y:{rvec[1]}, and Z:{rvec[2]}\n")
         # first try
-        rotation_threshold = 1
-        threshold_distance = 0.5
+        rotation_threshold_z = 0.05
+        rotation_threshold_xy = 1
+        threshold_distance = 0.8
+        distance_z = 0.25 #distance to stop
         # return "Parked"
 
-        if tvec[2] > threshold_distance:
-            if abs(rvec[2]) < rotation_threshold:
-                return "Forward"
-            elif rvec[2] > 0:
-                return "Right"
-            else:
+        if abs(tvec[2]) > distance_z: 
+            if abs(tvec[0]) <= threshold_distance and abs(tvec[1]) <= threshold_distance: #se x e y for perto de zero, significa que é só ir pra frente pra chegar no aruco
+                return "Forward"  
+            elif abs(rvec[0]) < rotation_threshold_xy and rvec[0] < 0:
                 return "Left"
+            elif abs(rvec[0]) > rotation_threshold_xy and rvec[0] > 0:
+                return "Right"
+            
+            #elif abs(rvec[2]) < rotation_threshold_z and rvec[2] < 0: #se x for negativo, virar pra esquerda
+            #    return "Left"
+            #else: 
+            #    return "Right"   
+
+            #if tvec[2] > threshold_distance:
+            #    if abs(rvec[2]) < rotation_threshold:
+            #        return "Forward"
+            #    elif rvec[2] > 0:
+            #        return "Right"
+            #    else:
+            #        return "Left"
 
         return "Stop"
 

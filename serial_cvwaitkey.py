@@ -86,17 +86,17 @@ class AutonomousCar:
     def run(self):
         try:
             while True:
-                frame = video_capture.get_frame(self.video_capture)
-                key = self.get_code_command_car(frame)
-                if key in {"w", "a", "s", "d"}:
-                    self.serial_port.write(key.encode())
-                elif key in {"20", "30", "40", "50"}:
+                #frame = video_capture.get_frame(self.video_capture)
+                #key = self.get_code_command_car(frame)
+                #if key in {"w", "a", "s", "d"}:
+                #    self.serial_port.write(key.encode())
+                #elif key in {"20", "30", "40", "50"}:
                     #self.go_to_crosswalk()
-                    time.sleep(int(key))
-                    self.go_to_aruco()
+                #    time.sleep(int(key))
+                self.go_to_aruco()
 
-                if key == ord("q") or cv2.waitKey(1) == ord("q"):
-                    break
+                #if key == ord("q") or cv2.waitKey(1) == ord("q"):
+                #    break
 
                 time.sleep(0.3)  # Add a small delay to avoid rapid key presses (30 fps)
 

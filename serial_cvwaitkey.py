@@ -11,8 +11,8 @@ class AutonomousCar:
     def __init__(self):
         self.image_processor = img.ImageProcess()
         self.identified_circle = False
-        # self.serial_port = serial.Serial('COM5', 9600)
-        self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
+        self.serial_port = serial.Serial('COM5', 9600)
+        #self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
         self.video_capture = video_capture.connect_camera()
 
     def process_image(self, image):
@@ -91,7 +91,7 @@ class AutonomousCar:
                 if key in {"w", "a", "s", "d"}:
                     self.serial_port.write(key.encode())
                 elif key in {"20", "30", "40", "50"}:
-                    self.go_to_crosswalk()
+                    #self.go_to_crosswalk()
                     time.sleep(int(key))
                     self.go_to_aruco()
 

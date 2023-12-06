@@ -1,6 +1,7 @@
 import cv2.aruco as aruco
 import cv2
 import numpy as np
+import os
 import yaml
 
 # referência: https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
@@ -14,8 +15,8 @@ class ArUcoMarkerDetector:
         self.image = frame
 
     def get_parameters_calibration(self):
-        filename = "/home/matheusl/Área de Trabalho/visao/auto_car/self-driving-car/calibration_data.yaml"
-        # filename = "C:Users/Juliana/Desktop/mestrado/DPI/INF-492 Fundamentos Visao Computacional/TrabalhoFinal_CarrinhoRobo/codigo/carrinho_autonomo_novo/calibration_data"
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(current_directory, "calibration_data.yaml")
 
         with open(filename, "r") as file:
             data = yaml.safe_load(file)

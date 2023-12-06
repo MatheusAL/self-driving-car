@@ -9,19 +9,19 @@ frame_count = 0
 
 def connect_camera():
     # 0-camera notebook 1- camera carrinho
-    cap = cv.VideoCapture(2)
+    cap = cv.VideoCapture(1)
 
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
 
-    # fps = 10.0
-    # height = 720.0
-    # width = 1280.0
+    fps = 10.0
+    height = 720.0
+    width = 1280.0
 
-    fps = 30.0
-    height = 480.0
-    width = 640.0
+    #fps = 30.0
+    #height = 480.0
+    #width = 640.0
 
     cap.set(cv.CAP_PROP_FPS, fps)
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)

@@ -39,7 +39,7 @@ class ImageProcess:
         return intersection_x, intersection_y
 
     def get_lines(self, dst):
-        linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 100, None, 50, 200)
+        linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 150, None, 50, 10)
         number_lines = len(linesP) if linesP is not None else 0
         print(f"Número de linhas encontradas: {number_lines}")
         return linesP

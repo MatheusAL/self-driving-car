@@ -79,26 +79,31 @@ class AutonomousCar:
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode())
                 time.sleep(0.1)
+            
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
-            time.sleep(1)
+
+            time.sleep(0.4)
+        
+        return "Parked"
 
     def run(self):
         try:
             while True:
-                #frame = video_capture.get_frame(self.video_capture)
-                #key = self.get_code_command_car(frame)
-                #if key in {"w", "a", "s", "d"}:
-                #    self.serial_port.write(key.encode())
-                #elif key in {"20", "30", "40", "50"}:
-                    #self.go_to_crosswalk()
-                #    time.sleep(int(key))
-                self.go_to_aruco()
+                frame = video_capture.get_frame(self.video_capture)
+                key = self.get_code_command_car(frame)
+                if key in {"w", "a", "s", "d"}:
+                    self.serial_port.write(key.encode())
+                    self.serial_port.write(key.encode())
+                elif key in {"20", "30", "40", "50"}:
+                    self.go_to_crosswalk()
+                    time.sleep(int(key))
+                    key = self.go_to_aruco()
 
-                #if key == ord("q") or cv2.waitKey(1) == ord("q"):
-                #    break
+                if key == "Parked" or key == ord("q") or cv2.waitKey(1) == ord("q"):
+                    break
 
-                time.sleep(0.3)  # Add a small delay to avoid rapid key presses (30 fps)
+                time.sleep(0.4)  # Add a small delay to avoid rapid key presses (30 fps)
 
         except KeyboardInterrupt:
             pass

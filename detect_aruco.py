@@ -26,7 +26,7 @@ class ArUcoMarkerDetector:
 
     def get_coordinates(self, marker_ids, marker_corners):
         marker_id = marker_ids[0]
-        marker_length = 0.05
+        marker_length = 0.023
         camera_matrix, dist_coeffs = self.get_parameters_calibration()
 
         # Set coordinate system
@@ -59,33 +59,21 @@ class ArUcoMarkerDetector:
 
         print(f"Camera position: X:{tvec[0]}, Y:{tvec[1]}, and Z:{tvec[2]}")
         print(f"Camera rotation: X:{rvec[0]}, Y:{rvec[1]}, and Z:{rvec[2]}\n")
-        # first try
+
         rotation_threshold_z = 0.05
         rotation_threshold_xy = 1
-        threshold_distance = 0.8
-        distance_z = 0.25 #distance to stop
-        # return "Parked"
+        threshold_distance = 1
+        distance_z = 0.15 #distance to stop
 
         if abs(tvec[2]) > distance_z: 
             if abs(tvec[0]) <= threshold_distance and abs(tvec[1]) <= threshold_distance: #se x e y for perto de zero, significa que é só ir pra frente pra chegar no aruco
                 return "Forward"  
             elif abs(rvec[0]) < rotation_threshold_xy and rvec[0] < 0:
                 return "Left"
-            elif abs(rvec[0]) > rotation_threshold_xy and rvec[0] > 0:
+            elif abs(rvec[0]) < rotation_threshold_xy and rvec[0] > 0:
                 return "Right"
-            
-            #elif abs(rvec[2]) < rotation_threshold_z and rvec[2] < 0: #se x for negativo, virar pra esquerda
-            #    return "Left"
-            #else: 
-            #    return "Right"   
-
-            #if tvec[2] > threshold_distance:
-            #    if abs(rvec[2]) < rotation_threshold:
-            #        return "Forward"
-            #    elif rvec[2] > 0:
-            #        return "Right"
-            #    else:
-            #        return "Left"
+        else:
+             return "Parked"          
 
         return "Stop"
 

@@ -120,6 +120,13 @@ class ImageProcess:
         self.draw_central_line(cdstP, width)
 
     def get_direction(self, left_line, right_line, central_line):
+        if left_line is not None and right_line is None:
+            return "Left"
+        elif left_line is None and right_line is not None:
+            return "Right" 
+        elif left_line is None and right_line is None:
+            return "Stop" 
+    
         left_intersection_x, left_intercection_y = self.calculate_intersection(
             left_line, central_line
         )
@@ -201,10 +208,8 @@ class ImageProcess:
             if linesP is not None:
                 left_line, right_line = self.get_left_and_right_lines(linesP, width)
                 self.draw_left_and_right_lines(left_line, right_line, cdstP, width)
-
-                if left_line is not None and right_line is not None:
-                    central_line = self.get_central_line(cdstP, width)
-                    direction = self.get_direction(left_line, right_line, central_line)
+                central_line = self.get_central_line(cdstP, width)
+                direction = self.get_direction(left_line, right_line, central_line)
         else:
             direction = str(time_circle)
 

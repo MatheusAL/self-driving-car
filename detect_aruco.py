@@ -62,18 +62,21 @@ class ArUcoMarkerDetector:
 
         rotation_threshold_z = 0.05
         rotation_threshold_xy = 1
-        threshold_distance = 1
-        distance_z = 0.15 #distance to stop
+        threshold_distance = 0.8
+        distance_z = 0.15  # distance to stop
 
-        if abs(tvec[2]) > distance_z: 
-            if abs(tvec[0]) <= threshold_distance and abs(tvec[1]) <= threshold_distance: #se x e y for perto de zero, significa que é só ir pra frente pra chegar no aruco
-                return "Forward"  
+        if abs(tvec[2]) > distance_z:
+            if (
+                abs(tvec[0]) <= threshold_distance
+                and abs(tvec[1]) <= threshold_distance
+            ):  # se x e y for perto de zero, significa que é só ir pra frente pra chegar no aruco
+                return "Forward"
             elif abs(rvec[0]) < rotation_threshold_xy and rvec[0] < 0:
                 return "Left"
             elif abs(rvec[0]) < rotation_threshold_xy and rvec[0] > 0:
                 return "Right"
         else:
-             return "Parked"          
+            return "Parked"
 
         return "Stop"
 

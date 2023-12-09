@@ -11,8 +11,8 @@ class AutonomousCar:
     def __init__(self):
         self.image_processor = img.ImageProcess()
         self.identified_circle = False
-        self.serial_port = serial.Serial('COM5', 9600)
-        #self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
+        ##self.serial_port = serial.Serial('COM5', 9600)
+        self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
         self.video_capture = video_capture.connect_camera()
 
     def process_image(self, image):
@@ -32,6 +32,9 @@ class AutonomousCar:
         elif command == "Left":
             print("Movendo para esquerda.")
             return "a"
+        elif command == "Huge Left":
+            print("Movendo para esquerda.")
+            return "aa"
         elif command == "backward":
             print("Movendo para trás.")
             return "s"
@@ -63,7 +66,7 @@ class AutonomousCar:
 
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
-            time.sleep(0.3)
+            time.sleep(0.4)
 
     def go_to_aruco(self):
         while True:
@@ -77,14 +80,15 @@ class AutonomousCar:
 
             if key in {"w", "a", "s", "d"}:
                 self.serial_port.write(key.encode())
-                self.serial_port.write(key.encode())
+
+                # self.serial_port.write(key.encode())
                 time.sleep(0.1)
-            
+
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
 
             time.sleep(0.4)
-        
+
         return "Parked"
 
     def run(self):
@@ -95,11 +99,23 @@ class AutonomousCar:
                 if key in {"w", "a", "s", "d"}:
                     self.serial_port.write(key.encode())
                     self.serial_port.write(key.encode())
+                    time.sleep(1)
                 elif key in {"20", "30", "40", "50"}:
                     self.go_to_crosswalk()
                     time.sleep(int(key))
                     key = self.go_to_aruco()
-
+                elif key == "aa":  # teste----
+                    self.serial_port.write("a".encode())
+                    self.serial_port.write("a".encode())
+                    self.serial_port.write("a".encode())
+                    self.serial_port.write("a".encode())
+                    time.sleep(2)
+                elif key == "dd":
+                    self.serial_port.write("d".encode())
+                    self.serial_port.write("d".encode())
+                    self.serial_port.write("d".encode())
+                    self.serial_port.write("d".encode())
+                    time.sleep(2)
                 if key == "Parked" or key == ord("q") or cv2.waitKey(1) == ord("q"):
                     break
 

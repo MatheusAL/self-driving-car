@@ -3,6 +3,7 @@ import numpy as np
 
 # referência: https://docs.opencv.org/4.x/da/d53/tutorial_py_houghcircles.html
 
+
 class CircleDetector:
     def __init__(self, image):
         self.image = image
@@ -16,7 +17,7 @@ class CircleDetector:
             return "MAGENTA"
         elif 190 <= r <= 255 and 80 <= g <= 165 and 0 <= b <= 20:
             return "LARANJA"
-        elif 0 <= r <= 90 and 95 <= g <= 255 and 0 <= b <= 190 and g > b:
+        elif 0 <= r <= 110 and 95 <= g <= 255 and 0 <= b <= 190 and g > b:
             return "VERDE_CRU"
         else:
             return "No_color"
@@ -40,7 +41,7 @@ class CircleDetector:
         if circles is not None:
             circles = np.uint16(np.around(circles))
             reference_point = (100, 100)
-            min_distance = float('inf')
+            min_distance = float("inf")
             nearest_circle_index = None
 
             for i, circle in enumerate(circles[0, :]):
@@ -62,13 +63,12 @@ class CircleDetector:
                 print(f"Círculo mais próximo: {nearest_circle}")
                 print(f"Cor do círculo mais próximo RGB: {color_at_center_rgb}")
 
-                color_name = self.detect_color(color_at_center_rgb)          
-                #cv2.imshow("Círculo mais próximo", img)
-                #cv2.waitKey(0)
-                #cv2.destroyAllWindows()      
+                color_name = self.detect_color(color_at_center_rgb)
+                # cv2.imshow("Círculo mais próximo", img)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
         else:
             print("Nenhum círculo foi detectado.")
             color_name = "No_color"
-        
-        return color_name
 
+        return color_name

@@ -39,9 +39,14 @@ class ImageProcess:
         return intersection_x, intersection_y
 
     def get_lines(self, dst):
-        linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 150, None, 50, 10)
+        linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 100, None, 50, 50)
         number_lines = len(linesP) if linesP is not None else 0
         print(f"Número de linhas encontradas: {number_lines}")
+        """ cv.imshow("linhas", dst)
+        cv.waitKey() """
+
+        """ cv.imshow("linhas", cpy)
+        cv.waitKey() """
         return linesP
 
     def get_left_and_right_lines(self, linesP, width):
@@ -119,14 +124,29 @@ class ImageProcess:
 
         self.draw_central_line(cdstP, width)
 
+    def calculate_slope(self, line):
+        x1, y1, x2, y2 = line
+        return (y2 - y1) / (x2 - x1)
+
     def get_direction(self, left_line, right_line, central_line):
         if left_line is not None and right_line is None:
-            return "Left"
+            slope = self.calculate_slope(left_line)
+            print("slope da ESQUERDA " + str(slope))
+            if slope > 0.3:
+                return "Huge Left"
+            else:
+                return "Right"
         elif left_line is None and right_line is not None:
-            return "Right" 
+            slope = self.calculate_slope(right_line)
+            print("slope da DIREITA " + str(slope))
+            if abs(slope) > 0:
+                return "Left"
+            else:
+                return "Right"
+            return "Left"
         elif left_line is None and right_line is None:
-            return "Stop" 
-    
+            return "Stop"
+
         left_intersection_x, left_intercection_y = self.calculate_intersection(
             left_line, central_line
         )
@@ -141,7 +161,7 @@ class ImageProcess:
 
         if abs(left_intercection_y - right_intersection_y) <= y_threshold:
             return "Forward"
-        elif left_intercection_y < right_intersection_y:
+        elif left_intercection_y > right_intersection_y:
             return "Right"
         else:
             return "Left"
@@ -221,7 +241,7 @@ class ImageProcess:
         image_with_line = cv.line(
             image, (center_x, 0), (center_x, height), (255, 100, 100), 2
         )
-        # self.save_frame(image_with_line)
+        self.save_frame(image_with_line)
 
     def save_frame(self, frame):
         global frame_count

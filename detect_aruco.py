@@ -1,4 +1,3 @@
-import cv2.aruco as aruco
 import cv2
 import numpy as np
 import os
@@ -9,9 +8,9 @@ import yaml
 
 class ArUcoMarkerDetector:
     def __init__(self, frame):
-        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_1000)
-        self.parameters = aruco.DetectorParameters()
-        self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
+        self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_1000)
+        self.parameters = cv2.aruco.DetectorParameters()
+        self.detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.parameters)
         self.image = frame
 
     def get_parameters_calibration(self):

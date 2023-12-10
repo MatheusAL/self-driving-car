@@ -87,13 +87,20 @@ class AutonomousCar:
 
             if key in {"w", "a", "s", "d"}:
                 self.serial_port.write(key.encode())
-                self.serial_port.write(key.encode())
+                self.serial_port.write(key.encode()) 
+
+                #sempre que o aruco virar ele tem que andar pra frente também
+                #pq se não as coordenadas não mudam e ele não sai do lugar
+                if key not in {"w", "s"}:
+                  self.serial_port.write("w".encode())
+                  self.serial_port.write("w".encode())
+
                 time.sleep(1)
 
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
 
-            time.sleep(0.4)
+            #time.sleep(0.4)
 
         return "Parked"
 
@@ -121,7 +128,7 @@ class AutonomousCar:
                 if key == "Parked" or key == ord("q") or cv2.waitKey(1) == ord("q"):
                     break
 
-                time.sleep(0.4)  # Add a small delay to avoid rapid key presses (30 fps)
+                #time.sleep(0.4)  # Add a small delay to avoid rapid key presses (30 fps)
 
         except KeyboardInterrupt:
             pass

@@ -136,7 +136,10 @@ class ImageProcess:
             else:
                 return "Forward" 
         else:
-            return "Right"
+            if slopeRight < 0 and abs(slopeRight) > 1.5:
+                return "Left"
+            else:
+                return "Right"
         
     def get_direction_with_intersection_lines(self, left_line, right_line, central_line):
         left_intersection_x, left_intercection_y = self.calculate_intersection(
@@ -174,7 +177,7 @@ class ImageProcess:
             else:
                 return "Right"
         elif left_line is None and right_line is None:
-            return "Stop"
+            return "Left"
 
         return self.get_direction_with_slope(left_line, right_line)
         #return self.get_direction_with_intersection_lines(left_line, right_line, central_line)
@@ -254,7 +257,7 @@ class ImageProcess:
         image_with_line = cv.line(
             image, (center_x, 0), (center_x, height), (255, 100, 100), 2
         )
-        self.save_frame(image_with_line)
+        #self.save_frame(image_with_line)
 
     def save_frame(self, frame):
         global frame_count

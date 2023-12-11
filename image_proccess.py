@@ -176,7 +176,7 @@ class ImageProcess:
             else:
                 return "Right"
         elif left_line is None and right_line is None:
-            return "Left"
+            return "Left" # se perder as linhas procurar rodando na mesma direção
 
         # decidir qual das duas opções o carrinho anda melhor
         # get_direction_with_slope --> usa inclinação da linha
@@ -215,7 +215,7 @@ class ImageProcess:
         if marker_corners is not None and marker_ids is not None:
             return aruco_manager.get_direction_aruco(marker_corners, marker_ids)
         else:
-            return "Left"  # change
+            return "Left"  # se perder o aruco procurar rodando na mesma direção
 
     def pre_process_frame(self, frame):
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)

@@ -65,6 +65,7 @@ class ArUcoMarkerDetector:
         distance_z = 0.15  # distance to stop
 
         if abs(tvec[2]) > distance_z:
+            # se a posição x for negativa -> virar a esquerda, se for positivo -> virar a direita
             if tvec[0] < 0 and abs(rvec[0]) > rotation_threshold_xy and abs(tvec[2]) > rotation_threshold_z:
                 return "Left"
             elif tvec[0] > 0 and abs(rvec[0]) > rotation_threshold_xy and abs(tvec[2]) > rotation_threshold_z:

@@ -3,7 +3,6 @@ import numpy as np
 
 # referência: https://docs.opencv.org/4.x/da/d53/tutorial_py_houghcircles.html
 
-
 class CircleDetector:
     def __init__(self, image):
         self.image = image
@@ -27,6 +26,7 @@ class CircleDetector:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         gray = cv2.medianBlur(gray, 5)
 
+        # detecção considerando o círculo maior (amarelo)
         circles = cv2.HoughCircles(
             gray,
             cv2.HOUGH_GRADIENT_ALT,
@@ -64,9 +64,6 @@ class CircleDetector:
                 print(f"Cor do círculo mais próximo RGB: {color_at_center_rgb}")
 
                 color_name = self.detect_color(color_at_center_rgb)
-                # cv2.imshow("Círculo mais próximo", img)
-                # cv2.waitKey(0)
-                # cv2.destroyAllWindows()
         else:
             print("Nenhum círculo foi detectado.")
             color_name = "No_color"

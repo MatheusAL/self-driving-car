@@ -62,10 +62,12 @@ class AutonomousCar:
             key = self.get_code_command_car(frame)
 
             if key in {"w", "a", "s", "d"}:
+                # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode())                
                 time.sleep(0.5)
             elif key == "hugeLeft": 
+                # virada brusca - usada em situações que o carrinho não vê as duas faixas
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
@@ -86,11 +88,12 @@ class AutonomousCar:
             key = self.codeCommand(command)
 
             if key in {"w", "a", "s", "d"}:
+                # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode()) 
 
-                #sempre que o aruco virar ele tem que andar pra frente também
-                #pq se não as coordenadas não mudam e ele não sai do lugar
+                # sempre que o aruco virar ele tem que andar pra frente também
+                # pq se não as coordenadas não mudam e ele não sai do lugar
                 if key not in {"w", "s"}:
                   self.serial_port.write("w".encode())
                   self.serial_port.write("w".encode())
@@ -110,15 +113,16 @@ class AutonomousCar:
                 frame = video_capture.get_frame(self.video_capture)
                 key = self.get_code_command_car(frame)
                 if key in {"w", "a", "s", "d"}:
+                    # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
                     self.serial_port.write(key.encode())
-                    self.serial_port.write(key.encode())
-                    #self.serial_port.write(key.encode())
+                    self.serial_port.write(key.encode())                    
                     time.sleep(0.5)
                 elif key in {"20", "30", "40", "50"}:
                     self.go_to_crosswalk()
                     time.sleep(int(key))
                     key = self.go_to_aruco()
-                elif key == "hugeLeft":  # teste----
+                elif key == "hugeLeft":
+                    # virada brusca - usada em situações que o carrinho não vê as duas faixas
                     self.serial_port.write("a".encode())
                     self.serial_port.write("a".encode())
                     self.serial_port.write("a".encode())

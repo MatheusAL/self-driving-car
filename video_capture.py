@@ -6,7 +6,6 @@ import time
 frame_count = 0
 # cmd = "v4l2-ctl --device 2 --set-ctrl=white_balance_automatic=1,contrast=200,white_balance_temperature=1,focus_automatic_continuous=0"
 
-
 def connect_camera():
     # 0-camera notebook 1- camera carrinho
     cap = cv.VideoCapture(1)
@@ -18,10 +17,6 @@ def connect_camera():
     fps = 10.0
     height = 720.0
     width = 1280.0
-
-    #fps = 30.0
-    #height = 480.0
-    #width = 640.0
 
     cap.set(cv.CAP_PROP_FPS, fps)
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)
@@ -47,7 +42,6 @@ def connect_camera():
 
     return cap
 
-
 def save_frame(frame):
     global frame_count
     current_directory = os.path.dirname(
@@ -65,7 +59,6 @@ def save_frame(frame):
     filename = os.path.join(frames_lidos_directory, f"frame_{frame_count}.jpg")
     cv.imwrite(filename, frame)
     frame_count += 1
-
 
 def get_frame(cap):
     ret, frame = cap.read()

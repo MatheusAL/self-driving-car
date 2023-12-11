@@ -8,7 +8,6 @@ import detect_aruco as detaruco
 
 frame_count = 0
 
-
 class ImageProcess:
     def get_central_line(self, image, width):
         height = image.shape[0]
@@ -179,6 +178,10 @@ class ImageProcess:
         elif left_line is None and right_line is None:
             return "Left"
 
+        # decidir qual das duas opções o carrinho anda melhor
+        # get_direction_with_slope --> usa inclinação da linha
+        # get_direction_with_intersection_lines --> interseção de duas retas
+        
         return self.get_direction_with_slope(left_line, right_line)
         #return self.get_direction_with_intersection_lines(left_line, right_line, central_line)
 

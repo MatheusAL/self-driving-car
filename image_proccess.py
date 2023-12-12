@@ -4,7 +4,7 @@ import detect_circle as circle
 import os
 import detect_aruco as detaruco
 
-# referência detecção de linhas: https://docs.opencv.org/3.4/d9/db0/tutorial_hough_lines.html
+# Adapted from: https://docs.opencv.org/3.4/d9/db0/tutorial_hough_lines.html
 
 frame_count = 0
 
@@ -40,18 +40,18 @@ class ImageProcess:
     def get_lines(self, dst):
         linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 100, None, 50, 50)
         number_lines = len(linesP) if linesP is not None else 0
-        print(f"Número de linhas encontradas: {number_lines}")
+        print(f"Number of lines found: {number_lines}")
         return linesP
 
     def get_left_and_right_lines(self, linesP, width):
         linesP = linesP[:, 0, :]
 
-        # Ordena as linhas com base na distância ao centro
+        # Sort lines based on distance from center
         linesP = sorted(
             linesP, key=lambda x: self.distance_to_central_line(x, width // 2)
         )
 
-        # Encontra a linha à esquerda e à direita
+        # Find the line left and right
         left_line = None
         right_line = None
         maior_esquerda = 0
@@ -67,29 +67,28 @@ class ImageProcess:
             if mid_point_x > width // 2 and l[1] > maior_x_direita:
                 maior_x_direita = l[1]
 
-            # Determina se a linha está à esquerda ou à direita
+            # Determines whether the line is to the left or right
             if mid_point_x < width // 2:
                 side = "Esquerda"
             else:
                 side = "Direita"
 
-            # Imprime informações sobre a linha, incluindo a posição em relação ao centro
+            # Prints information about the line, including position relative to the center
             print(
                 f"Linha {i + 1}: Pontos iniciais ({l[0]}, {l[1]}), Pontos finais ({l[2]}, {l[3]}), Posição: {side}"
             )
 
-            # Se a linha estiver à esquerda
+            # If the line is to the left
             if mid_point_x < width // 2 and l[1] == maior_esquerda:
                 left_line = l
 
-            # Se a linha estiver à direita
+            # If the line is to the right
             elif mid_point_x > width // 2 and l[1] == maior_x_direita:
                 right_line = l
 
         return left_line, right_line
 
     def draw_left_and_right_lines(self, left_line, right_line, cdstP, width):
-        # Desenha as linhas selecionadas
         if left_line is not None:
             cv.line(
                 cdstP,
@@ -176,11 +175,11 @@ class ImageProcess:
             else:
                 return "Right"
         elif left_line is None and right_line is None:
-            return "Left" # se perder as linhas procurar rodando na mesma direção
+            return "Left" # if the car loses its lines, try to drive in the same direction
 
-        # decidir qual das duas opções o carrinho anda melhor
-        # get_direction_with_slope --> usa inclinação da linha
-        # get_direction_with_intersection_lines --> interseção de duas retas
+        # decide which of the two options the car runs better
+        # get_direction_with_slope --> use line slope
+        # get_direction_with_intersection_lines --> intersection of two lines
         
         return self.get_direction_with_slope(left_line, right_line)
         #return self.get_direction_with_intersection_lines(left_line, right_line, central_line)
@@ -266,15 +265,15 @@ class ImageProcess:
         global frame_count
         current_directory = os.path.dirname(
             os.path.abspath(__file__)
-        )  # Obtém o diretório atual do arquivo em execução
+        ) 
         frames_lidos_directory = os.path.join(
             current_directory, "frames_lidos_processados"
-        )  # Constrói o caminho para a pasta 'frames_lidos'
+        )
 
         if not os.path.exists(frames_lidos_directory):
             os.makedirs(
                 frames_lidos_directory
-            )  # Cria a pasta 'frames_lidos' se não existir
+            )
 
         filename = os.path.join(frames_lidos_directory, f"frame_{frame_count}.jpg")
         cv.imwrite(filename, frame)

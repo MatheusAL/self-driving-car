@@ -65,21 +65,21 @@ class AutonomousCar:
                 # two controls to give power to the car, one control sometimes it doesn't move
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode())
-                time.sleep(0.5)
+                time.sleep(0.4)
             elif key == "hugeLeft":
                 # sudden turn - used in situations where the cart does not see both lanes
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
-                time.sleep(1)
+                time.sleep(0.5)
 
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
 
     def go_to_aruco(self):
         park_distance = 0.15
-        step_distance = 0.03
+        step_distance = 0.04
         while True:
             frame = video_capture.get_frame(self.video_capture)
             command, distance = self.image_processor.park_the_car(frame)
@@ -92,7 +92,9 @@ class AutonomousCar:
             if key in {"w", "a", "s", "d"}:
                 # two commannds to give power to the car, one control sometimes it doesn't move
                 self.serial_port.write(key.encode())
-                self.serial_port.write(key.encode())
+
+                if distance > park_distance + step_distance:
+                    self.serial_port.write(key.encode())
 
                 # whenever the car turns, it also has to move forward because otherwise the
                 # coordinates don't change and it doesn't move
@@ -102,7 +104,7 @@ class AutonomousCar:
                     self.serial_port.write("w".encode())
                     self.serial_port.write("w".encode())
 
-                time.sleep(1)
+                time.sleep(0.8)
 
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
@@ -120,7 +122,7 @@ class AutonomousCar:
                     # two controls to give power to the car, one control sometimes it doesn't move
                     self.serial_port.write(key.encode())
                     self.serial_port.write(key.encode())
-                    time.sleep(0.5)
+                    time.sleep(0.4)
                 elif key in {"20", "30", "40", "50"}:
                     self.go_to_crosswalk()
                     time.sleep(int(key))
@@ -131,7 +133,7 @@ class AutonomousCar:
                     self.serial_port.write("a".encode())
                     self.serial_port.write("a".encode())
                     self.serial_port.write("a".encode())
-                    time.sleep(1)
+                    time.sleep(0.5)
 
                 if key == "Parked" or key == ord("q") or cv2.waitKey(1) == ord("q"):
                     break

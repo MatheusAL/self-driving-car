@@ -24,25 +24,25 @@ class AutonomousCar:
 
     def codeCommand(self, command):
         if command == "Forward":
-            print("Movendo para frente.")
+            print("Moving forward")
             return "w"
         elif command == "Right":
-            print("Movendo para direita.")
+            print("Moving right")
             return "d"
         elif command == "Left":
-            print("Movendo para esquerda.")
+            print("Moving left")
             return "a"
         elif command == "Huge Left":
-            print("Movendo para esquerda.")
+            print("Moving left - Huge Left")
             return "hugeLeft"
         elif command == "backward":
-            print("Movendo para trás.")
+            print("Moving backward")
             return "s"
         elif command == "stop":
-            print("Não mover")
+            print("Don't move")
             return ""
         elif command in {"20", "30", "40", "50"}:
-            print(f"Aguardar {command} segundos")
+            print(f"Wait {command} seconds")
             return command
 
     def get_code_command_car(self, frame):
@@ -56,18 +56,18 @@ class AutonomousCar:
 
             if self.image_processor.saw_aruco(
                 frame
-            ):  # geralmente o carrinho vê o aruco já bem próximo da faixa
+            ):  # generally the car sees the aruco close to the lane
                 break
 
             key = self.get_code_command_car(frame)
 
             if key in {"w", "a", "s", "d"}:
-                # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
+                # two controls to give power to the car, one control sometimes it doesn't move
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode())
                 time.sleep(0.5)
             elif key == "hugeLeft":
-                # virada brusca - usada em situações que o carrinho não vê as duas faixas
+                # sudden turn - used in situations where the cart does not see both lanes
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
@@ -90,12 +90,12 @@ class AutonomousCar:
             key = self.codeCommand(command)
 
             if key in {"w", "a", "s", "d"} and distance > park_distance + step_distance:
-                # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
+                # two commannds to give power to the car, one control sometimes it doesn't move
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode())
 
-                # sempre que o aruco virar ele tem que andar pra frente também
-                # pq se não as coordenadas não mudam e ele não sai do lugar
+                # whenever the car turns, it also has to move forward because otherwise the
+                # coordinates don't change and it doesn't move
                 if (
                     key not in {"w", "s"} and distance > park_distance + step_distance
                 ):  # max distance + step distance
@@ -117,7 +117,7 @@ class AutonomousCar:
                 frame = video_capture.get_frame(self.video_capture)
                 key = self.get_code_command_car(frame)
                 if key in {"w", "a", "s", "d"}:
-                    # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
+                    # two controls to give power to the car, one control sometimes it doesn't move
                     self.serial_port.write(key.encode())
                     self.serial_port.write(key.encode())
                     time.sleep(0.5)
@@ -126,7 +126,7 @@ class AutonomousCar:
                     time.sleep(int(key))
                     key = self.go_to_aruco()
                 elif key == "hugeLeft":
-                    # virada brusca - usada em situações que o carrinho não vê as duas faixas
+                    # sudden turn - used in situations where the cart does not see both lanes
                     self.serial_port.write("a".encode())
                     self.serial_port.write("a".encode())
                     self.serial_port.write("a".encode())

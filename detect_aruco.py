@@ -3,7 +3,7 @@ import numpy as np
 import os
 import yaml
 
-# referência: https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
+# Adapted from: https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
 
 
 class ArUcoMarkerDetector:
@@ -62,7 +62,7 @@ class ArUcoMarkerDetector:
         distance_z = 0.15  # distance to stop
 
         if abs(tvec[2]) > distance_z:
-            # se a posição x for negativa -> virar a esquerda, se for positivo -> virar a direita
+            # if the x position is negative -> turn left, if it is positive -> turn right
             if (
                 tvec[0] < 0
                 and abs(rvec[0]) > rotation_threshold_xy
@@ -78,7 +78,7 @@ class ArUcoMarkerDetector:
             elif (
                 abs(tvec[0]) <= threshold_distance
                 and abs(tvec[1]) <= threshold_distance
-            ):  # se x e y for perto de zero, significa que é só ir pra frente pra chegar no aruco
+            ):  # if x and y are close to zero, it means that you just have to go forward to reach the aruco
                 return "Forward", tvec[2]
         else:
             return "Parked", 0

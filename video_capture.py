@@ -48,15 +48,15 @@ def save_frame(frame):
     global frame_count
     current_directory = os.path.dirname(
         os.path.abspath(__file__)
-    )  # Obtém o diretório atual do arquivo em execução
+    ) 
     frames_lidos_directory = os.path.join(
         current_directory, "frames_lidos_limpos"
-    )  # Constrói o caminho para a pasta 'frames_lidos'
+    ) 
 
     if not os.path.exists(frames_lidos_directory):
         os.makedirs(
             frames_lidos_directory
-        )  # Cria a pasta 'frames_lidos' se não existir
+        ) 
 
     filename = os.path.join(frames_lidos_directory, f"frame_{frame_count}.jpg")
     cv.imwrite(filename, frame)

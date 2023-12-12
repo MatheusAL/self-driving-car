@@ -12,6 +12,7 @@ class ArUcoMarkerDetector:
         self.parameters = cv2.aruco.DetectorParameters()
         self.detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.parameters)
         self.image = frame
+        self.step_size = 0.06
 
     def get_parameters_calibration(self):
         current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -47,10 +48,6 @@ class ArUcoMarkerDetector:
             flags=cv2.SOLVEPNP_ITERATIVE,
         )
 
-        print(f"Marker ID: {marker_id}")
-        print(f"Rotation Vector (rvec): {rvec}")
-        print(f"Translation Vector (tvec): {tvec}")
-
         return tvec, rvec
 
     def get_direction_aruco(self, marker_corners, marker_ids):
@@ -66,19 +63,27 @@ class ArUcoMarkerDetector:
 
         if abs(tvec[2]) > distance_z:
             # se a posição x for negativa -> virar a esquerda, se for positivo -> virar a direita
-            if tvec[0] < 0 and abs(rvec[0]) > rotation_threshold_xy and abs(tvec[2]) > rotation_threshold_z:
-                return "Left"
-            elif tvec[0] > 0 and abs(rvec[0]) > rotation_threshold_xy and abs(tvec[2]) > rotation_threshold_z:
-                return "Right"            
+            if (
+                tvec[0] < 0
+                and abs(rvec[0]) > rotation_threshold_xy
+                and abs(tvec[2]) > rotation_threshold_z
+            ):
+                return "Left", tvec[2]
+            elif (
+                tvec[0] > 0
+                and abs(rvec[0]) > rotation_threshold_xy
+                and abs(tvec[2]) > rotation_threshold_z
+            ):
+                return "Right", tvec[2]
             elif (
                 abs(tvec[0]) <= threshold_distance
                 and abs(tvec[1]) <= threshold_distance
             ):  # se x e y for perto de zero, significa que é só ir pra frente pra chegar no aruco
-                return "Forward"
+                return "Forward", tvec[2]
         else:
-            return "Parked"
+            return "Parked", 0
 
-        return "Stop"
+        return "Stop", tvec[2]
 
     def detect_markers(self):
         image = self.image

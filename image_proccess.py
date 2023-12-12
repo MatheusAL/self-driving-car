@@ -8,6 +8,7 @@ import detect_aruco as detaruco
 
 frame_count = 0
 
+
 class ImageProcess:
     def get_central_line(self, image, width):
         height = image.shape[0]
@@ -24,9 +25,6 @@ class ImageProcess:
         x1, y1, x2, y2 = line
         x3, y3, x4, y4 = central_line
 
-        print(f"Line: ({x1}, {y1}), ({x2}, {y2})")
-        print(f"Central Line: ({x3}, {y3}), ({x4}, {y4})")
-
         # Calculate the intersection point
         intersection_x = (
             (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)
@@ -40,7 +38,6 @@ class ImageProcess:
     def get_lines(self, dst):
         linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 100, None, 50, 50)
         number_lines = len(linesP) if linesP is not None else 0
-        print(f"Número de linhas encontradas: {number_lines}")
         return linesP
 
     def get_left_and_right_lines(self, linesP, width):
@@ -73,11 +70,6 @@ class ImageProcess:
             else:
                 side = "Direita"
 
-            # Imprime informações sobre a linha, incluindo a posição em relação ao centro
-            print(
-                f"Linha {i + 1}: Pontos iniciais ({l[0]}, {l[1]}), Pontos finais ({l[2]}, {l[3]}), Posição: {side}"
-            )
-
             # Se a linha estiver à esquerda
             if mid_point_x < width // 2 and l[1] == maior_esquerda:
                 left_line = l
@@ -99,9 +91,6 @@ class ImageProcess:
                 3,
                 cv.LINE_AA,
             )
-            print(
-                f"Linha à esquerda: Pontos iniciais ({left_line[0]}, {left_line[1]}), Pontos finais ({left_line[2]}, {left_line[3]})"
-            )
 
         if right_line is not None:
             cv.line(
@@ -112,16 +101,13 @@ class ImageProcess:
                 3,
                 cv.LINE_AA,
             )
-            print(
-                f"Linha à direita: Pontos iniciais ({right_line[0]}, {right_line[1]}), Pontos finais ({right_line[2]}, {right_line[3]})"
-            )
 
         self.draw_central_line(cdstP, width)
 
     def calculate_slope(self, line):
         x1, y1, x2, y2 = line
         return (y2 - y1) / (x2 - x1)
-    
+
     def get_direction_with_slope(self, left_line, right_line):
         slopeLeft = self.calculate_slope(left_line)
         print("slope da ESQUERDA " + str(slopeLeft))
@@ -133,23 +119,23 @@ class ImageProcess:
             if slopeLeft < 0 and abs(slopeLeft) > 1.5:
                 return "Right"
             else:
-                return "Forward" 
+                return "Forward"
         else:
             if slopeRight < 0 and abs(slopeRight) > 1.5:
                 return "Left"
             else:
                 return "Right"
-        
-    def get_direction_with_intersection_lines(self, left_line, right_line, central_line):
+
+    def get_direction_with_intersection_lines(
+        self, left_line, right_line, central_line
+    ):
         left_intersection_x, left_intercection_y = self.calculate_intersection(
             left_line, central_line
         )
-        print(f"Intersection_left: ({left_intersection_x}, {left_intercection_y})")
 
         right_intersection_x, right_intersection_y = self.calculate_intersection(
             right_line, central_line
         )
-        print(f"Intersection_right: ({right_intersection_x}, {right_intersection_y})")
 
         y_threshold = 100
 
@@ -176,14 +162,16 @@ class ImageProcess:
             else:
                 return "Right"
         elif left_line is None and right_line is None:
-            return "Left" # se perder as linhas procurar rodando na mesma direção
+            return "Left"  # se perder as linhas procurar rodando na mesma direção
 
         # decidir qual das duas opções o carrinho anda melhor
         # get_direction_with_slope --> usa inclinação da linha
         # get_direction_with_intersection_lines --> interseção de duas retas
-        
-        return self.get_direction_with_slope(left_line, right_line)
-        #return self.get_direction_with_intersection_lines(left_line, right_line, central_line)
+
+        # return self.get_direction_with_slope(left_line, right_line)
+        return self.get_direction_with_intersection_lines(
+            left_line, right_line, central_line
+        )
 
     def get_time_circleframe(self, frame):
         circle_detector = circle.CircleDetector(frame)
@@ -215,7 +203,7 @@ class ImageProcess:
         if marker_corners is not None and marker_ids is not None:
             return aruco_manager.get_direction_aruco(marker_corners, marker_ids)
         else:
-            return "Left"  # se perder o aruco procurar rodando na mesma direção
+            return "Left", 10  # se perder o aruco procurar rodando na mesma direção
 
     def pre_process_frame(self, frame):
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
@@ -260,7 +248,7 @@ class ImageProcess:
         image_with_line = cv.line(
             image, (center_x, 0), (center_x, height), (255, 100, 100), 2
         )
-        #self.save_frame(image_with_line)
+        # self.save_frame(image_with_line)
 
     def save_frame(self, frame):
         global frame_count

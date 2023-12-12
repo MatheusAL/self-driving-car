@@ -11,8 +11,8 @@ class AutonomousCar:
     def __init__(self):
         self.image_processor = img.ImageProcess()
         self.identified_circle = False
-        self.serial_port = serial.Serial('COM5', 9600)
-        #self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
+        ##self.serial_port = serial.Serial("COM5", 9600)
+        self.serial_port = serial.Serial("/dev/ttyACM0", 9600)  # For Linux
         self.video_capture = video_capture.connect_camera()
 
     def process_image(self, image):
@@ -64,9 +64,9 @@ class AutonomousCar:
             if key in {"w", "a", "s", "d"}:
                 # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
                 self.serial_port.write(key.encode())
-                self.serial_port.write(key.encode())                
+                self.serial_port.write(key.encode())
                 time.sleep(0.5)
-            elif key == "hugeLeft": 
+            elif key == "hugeLeft":
                 # virada brusca - usada em situações que o carrinho não vê as duas faixas
                 self.serial_port.write("a".encode())
                 self.serial_port.write("a".encode())
@@ -78,32 +78,36 @@ class AutonomousCar:
                 break
 
     def go_to_aruco(self):
+        park_distance = 0.15
+        step_distance = 0.05
         while True:
             frame = video_capture.get_frame(self.video_capture)
-            command = self.image_processor.park_the_car(frame)
+            command, distance = self.image_processor.park_the_car(frame)
 
             if command == "Parked":
                 break
 
             key = self.codeCommand(command)
 
-            if key in {"w", "a", "s", "d"}:
+            if key in {"w", "a", "s", "d"} and distance > park_distance + step_distance:
                 # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
                 self.serial_port.write(key.encode())
-                self.serial_port.write(key.encode()) 
+                self.serial_port.write(key.encode())
 
                 # sempre que o aruco virar ele tem que andar pra frente também
                 # pq se não as coordenadas não mudam e ele não sai do lugar
-                if key not in {"w", "s"}:
-                  self.serial_port.write("w".encode())
-                  self.serial_port.write("w".encode())
+                if (
+                    key not in {"w", "s"} and distance > park_distance + step_distance
+                ):  # max distance + step distance
+                    self.serial_port.write("w".encode())
+                    self.serial_port.write("w".encode())
 
                 time.sleep(1)
 
             if key == ord("q") or cv2.waitKey(1) == ord("q"):
                 break
 
-            #time.sleep(0.4)
+            # time.sleep(0.4)
 
         return "Parked"
 
@@ -115,7 +119,7 @@ class AutonomousCar:
                 if key in {"w", "a", "s", "d"}:
                     # dois comandos pra dar força ao carrinho, um comando as vezes ele não sai do lugar
                     self.serial_port.write(key.encode())
-                    self.serial_port.write(key.encode())                    
+                    self.serial_port.write(key.encode())
                     time.sleep(0.5)
                 elif key in {"20", "30", "40", "50"}:
                     self.go_to_crosswalk()
@@ -132,7 +136,7 @@ class AutonomousCar:
                 if key == "Parked" or key == ord("q") or cv2.waitKey(1) == ord("q"):
                     break
 
-                #time.sleep(0.4)  # Add a small delay to avoid rapid key presses (30 fps)
+                # time.sleep(0.4)  # Add a small delay to avoid rapid key presses (30 fps)
 
         except KeyboardInterrupt:
             pass

@@ -79,7 +79,7 @@ class AutonomousCar:
 
     def go_to_aruco(self):
         park_distance = 0.15
-        step_distance = 0.05
+        step_distance = 0.03
         while True:
             frame = video_capture.get_frame(self.video_capture)
             command, distance = self.image_processor.park_the_car(frame)
@@ -89,7 +89,7 @@ class AutonomousCar:
 
             key = self.codeCommand(command)
 
-            if key in {"w", "a", "s", "d"} and distance > park_distance + step_distance:
+            if key in {"w", "a", "s", "d"}:
                 # two commannds to give power to the car, one control sometimes it doesn't move
                 self.serial_port.write(key.encode())
                 self.serial_port.write(key.encode())

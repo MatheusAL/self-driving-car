@@ -34,29 +34,23 @@ def connect_camera():
         or (height != cap.get(cv.CAP_PROP_FRAME_HEIGHT))
         or (fps != cap.get(cv.CAP_PROP_FPS))
     ):
-        print("ERRO na configuração da câmera.")
+        print("ERROR on camera.")
         print(f"Width: {cap.get(cv.CAP_PROP_FRAME_WIDTH)}")
         print(f"Height: {cap.get(cv.CAP_PROP_FRAME_HEIGHT)}")
         print(f"FPS: {cap.get(cv.CAP_PROP_FPS)}")
     else:
-        print("Configuração de câmera OK.")
+        print("Camera OK.")
 
     return cap
 
 
 def save_frame(frame):
     global frame_count
-    current_directory = os.path.dirname(
-        os.path.abspath(__file__)
-    ) 
-    frames_lidos_directory = os.path.join(
-        current_directory, "frames_lidos_limpos"
-    ) 
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    frames_lidos_directory = os.path.join(current_directory, "frames_lidos_limpos")
 
     if not os.path.exists(frames_lidos_directory):
-        os.makedirs(
-            frames_lidos_directory
-        ) 
+        os.makedirs(frames_lidos_directory)
 
     filename = os.path.join(frames_lidos_directory, f"frame_{frame_count}.jpg")
     cv.imwrite(filename, frame)

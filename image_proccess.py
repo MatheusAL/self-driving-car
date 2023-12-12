@@ -109,10 +109,8 @@ class ImageProcess:
 
     def get_direction_with_slope(self, left_line, right_line):
         slopeLeft = self.calculate_slope(left_line)
-        print("slope da ESQUERDA " + str(slopeLeft))
 
         slopeRight = self.calculate_slope(right_line)
-        print("slope da DIREITA " + str(slopeRight))
 
         if slopeRight > 0 and slopeRight > 0.15:
             if slopeLeft < 0 and abs(slopeLeft) > 1.5:
@@ -148,14 +146,12 @@ class ImageProcess:
     def get_direction(self, left_line, right_line, central_line):
         if left_line is not None and right_line is None:
             slope = self.calculate_slope(left_line)
-            print("slope da ESQUERDA " + str(slope))
             if slope > 0.3:
                 return "Huge Left"
             else:
                 return "Right"
         elif left_line is None and right_line is not None:
             slope = self.calculate_slope(right_line)
-            print("slope da DIREITA " + str(slope))
             if abs(slope) > 0:
                 return "Left"
             else:
@@ -170,7 +166,9 @@ class ImageProcess:
         # get_direction_with_intersection_lines --> intersection of two lines
 
         return self.get_direction_with_slope(left_line, right_line)
-        # return self.get_direction_with_intersection_lines(left_line, right_line, central_line)
+        # return self.get_direction_with_intersection_lines(
+        #    left_line, right_line, central_line
+        # )
 
     def get_time_circleframe(self, frame):
         circle_detector = circle.CircleDetector(frame)
